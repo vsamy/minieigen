@@ -102,43 +102,45 @@ struct custom_MatrixAnyAny_from_sequence{
 };
 
 // create AlignedBoxNr from tuple of 2 Vector3r's
-template<int dim>
-struct custom_alignedBoxNr_from_seq{
-	typedef Eigen::AlignedBox<Real,dim> AlignedBoxNr;
-	typedef Eigen::Matrix<Real,dim,1> VectorNr;
-	custom_alignedBoxNr_from_seq(){
-		py::converter::registry::push_back(&convertible,&construct,py::type_id<AlignedBoxNr>());
+template<class AlignedBoxNT, class VectorT>
+struct custom_alignedBoxNT_from_seq{
+	custom_alignedBoxNT_from_seq(){
+		py::converter::registry::push_back(&convertible,&construct,py::type_id<AlignedBoxNT>());
 	}
 	static void* convertible(PyObject* obj_ptr){
 		 if(!PySequence_Check(obj_ptr)) return 0;
 		 if(PySequence_Size(obj_ptr)!=2) return 0;
-		 if(!pySeqItemCheck<VectorNr>(obj_ptr,0) || !pySeqItemCheck<VectorNr>(obj_ptr,1)) return 0;
+		 if(!pySeqItemCheck<VectorT>(obj_ptr,0) || !pySeqItemCheck<VectorT>(obj_ptr,1)) return 0;
 		 return obj_ptr;
 	}
 	static void construct(PyObject* obj_ptr, py::converter::rvalue_from_python_stage1_data* data){
-		void* storage=((py::converter::rvalue_from_python_storage<AlignedBoxNr>*)(data))->storage.bytes;
-		new (storage) AlignedBoxNr(pySeqItemExtract<VectorNr>(obj_ptr,0),pySeqItemExtract<VectorNr>(obj_ptr,1));
+		void* storage=((py::converter::rvalue_from_python_storage<AlignedBoxNT>*)(data))->storage.bytes;
+		new (storage) AlignedBoxNT(pySeqItemExtract<VectorT>(obj_ptr,0),pySeqItemExtract<VectorT>(obj_ptr,1));
 		data->convertible=storage;
 	}
 };
 
-struct custom_Quaternionr_from_axisAngle_or_angleAxis{
-	custom_Quaternionr_from_axisAngle_or_angleAxis(){
-		py::converter::registry::push_back(&convertible,&construct,py::type_id<Quaternionr>());
+template<class QuaternionT>
+struct custom_Quaternion_from_axisAngle_or_angleAxis{
+	typedef typename QuaternionT::Scalar Scalar;
+	typedef Eigen::Matrix<Scalar, 3, 1> Vector3;
+	typedef Eigen::AngleAxis<Scalar> AngleAxis;
+	custom_Quaternion_from_axisAngle_or_angleAxis(){
+		py::converter::registry::push_back(&convertible,&construct,py::type_id<QuaternionT>());
 	}
 	static void* convertible(PyObject* obj_ptr){
 		if(!PySequence_Check(obj_ptr)) return 0;
 		if(PySequence_Size(obj_ptr)!=2) return 0;
 		py::object a(py::handle<>(PySequence_GetItem(obj_ptr,0))), b(py::handle<>(PySequence_GetItem(obj_ptr,1)));
 		// axis-angle or angle-axis
-		if((py::extract<Vector3r>(a).check() && py::extract<Real>(b).check()) || (py::extract<Real>(a).check() && py::extract<Vector3r>(b).check())) return obj_ptr;
+		if((py::extract<Vector3>(a).check() && py::extract<Scalar>(b).check()) || (py::extract<Scalar>(a).check() && py::extract<Vector3>(b).check())) return obj_ptr;
 		return 0;
 	}
 	static void construct(PyObject* obj_ptr, py::converter::rvalue_from_python_stage1_data* data){
-		void* storage=((py::converter::rvalue_from_python_storage<Quaternionr>*)(data))->storage.bytes;
+		void* storage=((py::converter::rvalue_from_python_storage<QuaternionT>*)(data))->storage.bytes;
 		py::object a(py::handle<>(PySequence_GetItem(obj_ptr,0))), b(py::handle<>(PySequence_GetItem(obj_ptr,1)));
-		if(py::extract<Vector3r>(py::object(a)).check()) new (storage) Quaternionr(AngleAxisr(py::extract<Real>(b)(),py::extract<Vector3r>(a)().normalized()));
-		else new (storage) Quaternionr(AngleAxisr(py::extract<Real>(a)(),py::extract<Vector3r>(b)().normalized()));
+		if(py::extract<Vector3>(py::object(a)).check()) new (storage) QuaternionT(AngleAxis(py::extract<Scalar>(b)(),py::extract<Vector3>(a)().normalized()));
+		else new (storage) QuaternionT(AngleAxis(py::extract<Scalar>(a)(),py::extract<Vector3>(b)().normalized()));
 		data->convertible=storage;
 	}
 };

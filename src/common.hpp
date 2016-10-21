@@ -1,9 +1,6 @@
 #pragma once
 // common types, funcs, includes; should be included by all other files
 
-/* change to float for single-precision */
-typedef double Real;
-
 // BEGIN workaround for
 // * http://eigen.tuxfamily.org/bz/show_bug.cgi?id=528
 // * https://sourceforge.net/tracker/index.php?func=detail&aid=3584127&group_id=202880&atid=983354
@@ -25,36 +22,56 @@ typedef Eigen::Matrix<int,1,1>::Index Index;
 
 /* exposed types */
 typedef Eigen::Matrix<int ,2,1> Vector2i;
-typedef Eigen::Matrix<Real,2,1> Vector2r;
+typedef Eigen::Matrix<float,2,1> Vector2f;
+typedef Eigen::Matrix<double,2,1> Vector2d;
 typedef Eigen::Matrix<int ,3,1> Vector3i;
-typedef Eigen::Matrix<Real,3,1> Vector3r;
-typedef Eigen::AlignedVector3<Real> Vector3ra;
-typedef Eigen::Matrix<Real,4,1> Vector4r;
+typedef Eigen::Matrix<float,3,1> Vector3f;
+typedef Eigen::Matrix<double,3,1> Vector3d;
+typedef Eigen::AlignedVector3<float> Vector3fa;
+typedef Eigen::AlignedVector3<double> Vector3da;
+typedef Eigen::Matrix<float,4,1> Vector4f;
+typedef Eigen::Matrix<double,4,1> Vector4d;
 typedef Eigen::Matrix<int ,6,1> Vector6i;
-typedef Eigen::Matrix<Real,6,1> Vector6r;
-typedef Eigen::Matrix<Real,3,3> Matrix3r;
-typedef Eigen::Matrix<Real,6,6> Matrix6r;
+typedef Eigen::Matrix<float,6,1> Vector6f;
+typedef Eigen::Matrix<double,6,1> Vector6d;
+typedef Eigen::Matrix<float,3,3> Matrix3f;
+typedef Eigen::Matrix<double,3,3> Matrix3d;
+typedef Eigen::Matrix<float,6,6> Matrix6f;
+typedef Eigen::Matrix<double,6,6> Matrix6d;
 
-typedef Eigen::Matrix<Real,Eigen::Dynamic,Eigen::Dynamic> MatrixXr;
-typedef Eigen::Matrix<Real,Eigen::Dynamic,1> VectorXr;
+typedef Eigen::Matrix<float,Eigen::Dynamic,Eigen::Dynamic> MatrixXf;
+typedef Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic> MatrixXd;
+typedef Eigen::Matrix<float,Eigen::Dynamic,1> VectorXf;
+typedef Eigen::Matrix<double,Eigen::Dynamic,1> VectorXd;
 
-typedef Eigen::Quaternion<Real> Quaternionr;
-typedef Eigen::AngleAxis<Real> AngleAxisr;
-typedef Eigen::AlignedBox<Real,3> AlignedBox3r;
-typedef Eigen::AlignedBox<Real,2> AlignedBox2r;
+typedef Eigen::Quaternion<float> Quaternionf;
+typedef Eigen::Quaternion<double> Quaterniond;
+typedef Eigen::AngleAxis<float> AngleAxisf;
+typedef Eigen::AngleAxis<double> AngleAxisd;
+typedef Eigen::AlignedBox<float,3> AlignedBox3f;
+typedef Eigen::AlignedBox<double,3> AlignedBox3d;
+typedef Eigen::AlignedBox<float,2> AlignedBox2f;
+typedef Eigen::AlignedBox<double,2> AlignedBox2d;
 
 #define _COMPLEX_SUPPORT
 
 #ifdef _COMPLEX_SUPPORT
 #include<complex>
 	using std::complex;
-	typedef Eigen::Matrix<complex<Real>,2,1> Vector2cr;
-	typedef Eigen::Matrix<complex<Real>,3,1> Vector3cr;
-	typedef Eigen::Matrix<complex<Real>,6,1> Vector6cr;
-	typedef Eigen::Matrix<complex<Real>,Eigen::Dynamic,1> VectorXcr;
-	typedef Eigen::Matrix<complex<Real>,3,3> Matrix3cr;
-	typedef Eigen::Matrix<complex<Real>,6,6> Matrix6cr;
-	typedef Eigen::Matrix<complex<Real>,Eigen::Dynamic,Eigen::Dynamic> MatrixXcr;
+	typedef Eigen::Matrix<complex<float>,2,1> Vector2cf;
+	typedef Eigen::Matrix<complex<double>,2,1> Vector2cd;
+	typedef Eigen::Matrix<complex<float>,3,1> Vector3cf;
+	typedef Eigen::Matrix<complex<double>,3,1> Vector3cd;
+	typedef Eigen::Matrix<complex<float>,6,1> Vector6cf;
+	typedef Eigen::Matrix<complex<double>,6,1> Vector6cd;
+	typedef Eigen::Matrix<complex<float>,Eigen::Dynamic,1> VectorXcf;
+	typedef Eigen::Matrix<complex<double>,Eigen::Dynamic,1> VectorXcd;
+	typedef Eigen::Matrix<complex<float>,3,3> Matrix3cf;
+	typedef Eigen::Matrix<complex<double>,3,3> Matrix3cd;
+	typedef Eigen::Matrix<complex<float>,6,6> Matrix6cf;
+	typedef Eigen::Matrix<complex<double>,6,6> Matrix6cd;
+	typedef Eigen::Matrix<complex<float>,Eigen::Dynamic,Eigen::Dynamic> MatrixXcf;
+	typedef Eigen::Matrix<complex<double>,Eigen::Dynamic,Eigen::Dynamic> MatrixXcd;
 #endif
 
 

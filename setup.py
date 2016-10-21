@@ -21,7 +21,7 @@ if sys.platform=='win32':
 else:
     libraries=['boost_python-py%d%d'%(sys.version_info[0],sys.version_info[1])]
     library_dirs=[]
-    include_dirs=['/usr/include/eigen3','/usr/local/include/eigen3','minieigen']
+    include_dirs=['/usr/local/include/eigen3','minieigen']
 
 setup(name='minieigen',
     version='0.5.4',
