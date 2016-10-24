@@ -84,7 +84,7 @@ struct custom_MatrixAnyAny_from_sequence{
 		if(isFlat){
 			if(sz!=mx.rows()*mx.cols()) throw std::runtime_error("Assigning matrix "+lexical_cast<string>(mx.rows())+"x"+lexical_cast<string>(mx.cols())+" from flat vector of size "+lexical_cast<string>(sz));
 			for(int i=0; i<sz; i++){
-				mx(i/mx.rows(),i%mx.cols())=pySeqItemExtract<typename MT::Scalar>(obj_ptr,i);
+				mx(i,0)=pySeqItemExtract<typename MT::Scalar>(obj_ptr,i);
 			}
 		} else {
 			for(Index row=0; row<mx.rows(); row++){
