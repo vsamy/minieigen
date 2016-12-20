@@ -24,11 +24,11 @@ BOOST_PYTHON_MODULE(_minieigen)
 
     expose_converters(); // in expose-converters.cpp
 
-    expose_vectors();
+    //expose_vectors();
     expose_matrices(); // must come after vectors
-    expose_complex();
-    expose_quaternion();
-    expose_boxes();
+    //expose_complex();
+    //expose_quaternion();
+    //expose_boxes();
 
     py::def("float2str", &doubleToShortest, (py::arg("f"), py::arg("pad") = 0), "Return the shortest string representation of *f* which will is equal to *f* when converted back to float. This function is only useful in Python prior to 3.0; starting from that version, standard string conversion does just that.");
 

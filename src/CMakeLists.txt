@@ -1,4 +1,4 @@
-include(../../cmake/python.cmake)
+include(../cmake/python.cmake)
 
 configure_file(__init__.py ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}/__init__.py COPYONLY)
 
@@ -15,8 +15,10 @@ set(CONVSOURCES double-conversion/bignum.cc double-conversion/bignum-dtoa.cc dou
 set(CONVHEADERS double-conversion/bignum-dtoa.h double-conversion/bignum.h double-conversion/cached-powers.h
     double-conversion/diy-fp.h double-conversion/double-conversion.h double-conversion/fast-dtoa.h
     double-conversion/fixed-dtoa.h double-conversion/ieee.h double-conversion/strtod.h double-conversion/utils.h)
-set(SOURCES expose-boxes.cpp expose-complex.cpp expose-converters.cpp expose-matrices.cpp
-    expose-quaternion.cpp expose-vectors.cpp minieigen.cpp)
+#set(SOURCES expose-boxes.cpp expose-complex.cpp expose-converters.cpp expose-matrices.cpp
+#    expose-quaternion.cpp expose-vectors.cpp minieigen.cpp)
+#set(HEADERS common.hpp converters.hpp expose.hpp visitors.hpp)
+set(SOURCES expose-matrices.cpp)
 set(HEADERS common.hpp converters.hpp expose.hpp visitors.hpp)
 
 
