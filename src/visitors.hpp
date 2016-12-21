@@ -36,9 +36,9 @@ public:
             .def("__isub__", &MatrixBaseVisitor::__isub__)
             .def("__eq__", &MatrixBaseVisitor::__eq__)
             .def("__ne__", &MatrixBaseVisitor::__ne__)
-            .def("__mul__", &MatrixBaseVisitor::__mul__scalar<long>)
-            .def("__imul__", &MatrixBaseVisitor::__imul__scalar<long>)
-            .def("__rmul__", &MatrixBaseVisitor::__rmul__scalar<long>)
+            .def("__mul__", &MatrixBaseVisitor::__mul__scalar<Scalar>)
+            .def("__rmul__", &MatrixBaseVisitor::__rmul__scalar<Scalar>)
+            .def("__imul__", &MatrixBaseVisitor::__imul__scalar<Scalar>)
             .def("isApprox", &MatrixBaseVisitor::isApprox, (py::arg("other"), py::arg("prec") = Eigen::NumTraits<Scalar>::dummy_precision()), "Approximate comparison with precision *prec*.");
         visit_if_float<Scalar, PyClass>(cl);
         visit_fixed_or_dynamic<MatrixBaseT, PyClass>(cl);
@@ -76,16 +76,16 @@ private:
             .add_static_property("Identity", &MatrixBaseVisitor::Identity);
     }
     template <typename Scalar, class PyClass, typename std::enable_if_t<std::is_integral<Scalar>::value>* = nullptr>
-    static void visit_if_float(PyClass& /* cl */) { /* do nothing */}
+    static void visit_if_float(PyClass& /* cl */) { /* Do nothing */ }
     template <typename Scalar, class PyClass, typename std::enable_if_t<!std::is_integral<Scalar>::value>* = nullptr>
     static void visit_if_float(PyClass& cl)
     {
         // operations with other scalars (Scalar is the floating type, long is the python integer type)
         // __trudiv__ is for py3k
         cl
-            .def("__mul__", &MatrixBaseVisitor::__mul__scalar<Scalar>)
-            .def("__rmul__", &MatrixBaseVisitor::__rmul__scalar<Scalar>)
-            .def("__imul__", &MatrixBaseVisitor::__imul__scalar<Scalar>)
+            .def("__mul__", &MatrixBaseVisitor::__mul__scalar<long>)
+            .def("__imul__", &MatrixBaseVisitor::__imul__scalar<long>)
+            .def("__rmul__", &MatrixBaseVisitor::__rmul__scalar<long>)
             .def("__div__", &MatrixBaseVisitor::__div__scalar<long>)
             .def("__truediv__", &MatrixBaseVisitor::__div__scalar<long>)
             .def("__idiv__", &MatrixBaseVisitor::__idiv__scalar<long>)
@@ -179,7 +179,7 @@ private:
         return abs(num) <= absTol;
     }
 
-    static MatrixBaseT pruned(const MatrixBaseT& a, double absTol = 1e-6)
+    static MatrixBaseT pruned(const MatrixBaseT& a, RealScalar absTol = 1e-6)
     { // typename MatrixBaseT::Scalar absTol=1e-6){
         MatrixBaseT ret(MatrixBaseT::Zero(a.rows(), a.cols()));
         for (Index c = 0; c < a.cols(); c++) {
@@ -336,9 +336,10 @@ private:
     }
     static CompatVecX* VecX_fromList(const std::vector<Scalar>& ii)
     {
-        CompatVecX* v(new CompatVecX(ii.size()));
-        for (size_t i = 0; i < ii.size(); i++)
-            (*v)[i] = ii[i];
+        Index size = static_cast<Index>(ii.size());
+        CompatVecX* v(new CompatVecX(size));
+        for (Index i = 0; i < size; i++)
+            (*v)[i] = ii[static_cast<size_t>(i)];
         return v;
     }
 

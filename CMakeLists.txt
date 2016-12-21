@@ -8,7 +8,7 @@ set(PROJECT_NAME minieigen)
 set(PROJECT_DESCRIPTION "...")
 set(PROJECT_URL "")
 
-SET(CXX_DISABLE_WERROR True)
+#SET(CXX_DISABLE_WERROR True)
 
 project(${PROJECT_NAME} CXX)
 SETUP_PROJECT()
@@ -18,7 +18,7 @@ set(BOOST_COMPONENTS python)
 SEARCH_FOR_BOOST()
 SEARCH_FOR_EIGEN()
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -std=c++14 -pedantic")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -std=c++1y -pedantic")
 
 add_subdirectory(src)
 

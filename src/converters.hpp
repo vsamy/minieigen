@@ -8,10 +8,10 @@
 */
 
 template <typename T>
-bool pySeqItemCheck(PyObject* o, int i) { return py::extract<T>(py::object(py::handle<>(PySequence_GetItem(o, i)))).check(); }
+bool pySeqItemCheck(PyObject* o, Py_ssize_t i) { return py::extract<T>(py::object(py::handle<>(PySequence_GetItem(o, i)))).check(); }
 
 template <typename T>
-T pySeqItemExtract(PyObject* o, int i) { return py::extract<T>(py::object(py::handle<>(PySequence_GetItem(o, i))))(); }
+T pySeqItemExtract(PyObject* o, Py_ssize_t i) { return py::extract<T>(py::object(py::handle<>(PySequence_GetItem(o, i))))(); }
 
 template <class VT>
 struct custom_VectorAnyAny_from_sequence {
@@ -21,24 +21,25 @@ struct custom_VectorAnyAny_from_sequence {
         if (!PySequence_Check(obj_ptr) || (VT::RowsAtCompileTime != Eigen::Dynamic && (PySequence_Size(obj_ptr) != VT::RowsAtCompileTime)))
             return 0;
         // check that sequence items are convertible to scalars (should be done in other converters as well?!); otherwise Matrix3 is convertible to Vector3, but then we fail in *construct* very unclearly (TypeError: No registered converter was able to produce a C++ rvalue of type double from this Python object of type Vector3)
-        size_t len = PySequence_Size(obj_ptr);
-        for (size_t i = 0; i < len; i++)
+        Py_ssize_t len = PySequence_Size(obj_ptr);
+        for (Py_ssize_t i = 0; i < len; i++)
             if (!pySeqItemCheck<typename VT::Scalar>(obj_ptr, i))
                 return 0;
         return obj_ptr;
     }
     static void construct(PyObject* obj_ptr, py::converter::rvalue_from_python_stage1_data* data)
     {
-        void* storage = ((py::converter::rvalue_from_python_storage<VT>*)(data))->storage.bytes;
+        using storage_type = py::converter::rvalue_from_python_storage<VT>;
+        void* storage = reinterpret_cast<storage_type*>(data)->storage.bytes;
         new (storage) VT;
-        size_t len;
+        Py_ssize_t len;
         if (VT::RowsAtCompileTime != Eigen::Dynamic) {
             len = VT::RowsAtCompileTime;
         } else {
             len = PySequence_Size(obj_ptr);
             ((VT*)storage)->resize(len);
         }
-        for (size_t i = 0; i < len; i++)
+        for (Py_ssize_t i = 0; i < len; i++)
             (*((VT*)storage))[i] = pySeqItemExtract<typename VT::Scalar>(obj_ptr, i);
         data->convertible = storage;
     }
@@ -56,7 +57,7 @@ struct custom_MatrixAnyAny_from_sequence {
         BOOST_STATIC_ASSERT(
             (MT::RowsAtCompileTime != Eigen::Dynamic && MT::ColsAtCompileTime != Eigen::Dynamic)
             || (MT::RowsAtCompileTime == Eigen::Dynamic && MT::ColsAtCompileTime == Eigen::Dynamic));
-        int sz = PySequence_Size(obj_ptr);
+        Py_ssize_t sz = PySequence_Size(obj_ptr);
         if (MT::RowsAtCompileTime != Eigen::Dynamic) {
             if (isFlat) {
                 // flat sequence (first item not sub-sequence), must contain exactly all items
@@ -75,10 +76,11 @@ struct custom_MatrixAnyAny_from_sequence {
     }
     static void construct(PyObject* obj_ptr, py::converter::rvalue_from_python_stage1_data* data)
     {
-        void* storage = ((py::converter::rvalue_from_python_storage<MT>*)(data))->storage.bytes;
+        using storage_type = py::converter::rvalue_from_python_storage<MT>;
+        void* storage = reinterpret_cast<storage_type*>(data)->storage.bytes;
         new (storage) MT;
         MT& mx = *(MT*)storage;
-        int sz = PySequence_Size(obj_ptr);
+        Py_ssize_t sz = PySequence_Size(obj_ptr);
         bool isFlat = !PySequence_Check(py::handle<>(PySequence_GetItem(obj_ptr, 0)).get());
         if (MT::RowsAtCompileTime != Eigen::Dynamic) {
             // do nothing
@@ -87,12 +89,12 @@ struct custom_MatrixAnyAny_from_sequence {
             if (isFlat)
                 mx.resize(sz, 1); // row vector, if flat
             else { // find maximum size of items
-                int rows = sz;
-                int cols = 0;
-                for (int i = 0; i < rows; i++) {
+                Py_ssize_t rows = sz;
+                Py_ssize_t cols = 0;
+                for (Py_ssize_t i = 0; i < rows; i++) {
                     if (!PySequence_Check(py::handle<>(PySequence_GetItem(obj_ptr, i)).get()))
                         throw std::runtime_error("Some elements of the array given are not sequences");
-                    int cols2 = PySequence_Size(py::handle<>(PySequence_GetItem(obj_ptr, i)).get());
+                    Py_ssize_t cols2 = PySequence_Size(py::handle<>(PySequence_GetItem(obj_ptr, i)).get());
                     if (cols == 0)
                         cols = cols2;
                     if (cols != cols2)
@@ -144,7 +146,8 @@ struct custom_alignedBoxNT_from_seq {
     }
     static void construct(PyObject* obj_ptr, py::converter::rvalue_from_python_stage1_data* data)
     {
-        void* storage = ((py::converter::rvalue_from_python_storage<AlignedBoxNT>*)(data))->storage.bytes;
+        using storage_type = py::converter::rvalue_from_python_storage<AlignedBoxNT>;
+        void* storage = reinterpret_cast<storage_type*>(data)->storage.bytes;
         new (storage) AlignedBoxNT(pySeqItemExtract<VectorT>(obj_ptr, 0), pySeqItemExtract<VectorT>(obj_ptr, 1));
         data->convertible = storage;
     }
@@ -173,7 +176,8 @@ struct custom_Quaternion_from_axisAngle_or_angleAxis {
     }
     static void construct(PyObject* obj_ptr, py::converter::rvalue_from_python_stage1_data* data)
     {
-        void* storage = ((py::converter::rvalue_from_python_storage<QuaternionT>*)(data))->storage.bytes;
+        using storage_type = py::converter::rvalue_from_python_storage<QuaternionT>;
+        void* storage = reinterpret_cast<storage_type*>(data)->storage.bytes;
         py::object a(py::handle<>(PySequence_GetItem(obj_ptr, 0))), b(py::handle<>(PySequence_GetItem(obj_ptr, 1)));
         if (py::extract<Vector3>(py::object(a)).check())
             new (storage) QuaternionT(AngleAxis(py::extract<Scalar>(b)(), py::extract<Vector3>(a)().normalized()));
