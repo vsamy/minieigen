@@ -153,6 +153,7 @@ void PowersOfTenCache::GetCachedPowerForBinaryExponentRange(
   CachedPower cached_power = kCachedPowers[index];
   ASSERT(min_exponent <= cached_power.binary_exponent);
   ASSERT(cached_power.binary_exponent <= max_exponent);
+  (void)max_exponent; // Just to tell the compiler that it is used.
   *decimal_exponent = cached_power.decimal_exponent;
   *power = DiyFp(cached_power.significand, cached_power.binary_exponent);
 }

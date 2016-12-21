@@ -37,4 +37,4 @@ BOOST_PYTHON_MODULE(_minieigen)
 #else
     py::scope().attr("vectorize") = true;
 #endif
-};
+}
