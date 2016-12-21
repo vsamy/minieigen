@@ -604,7 +604,7 @@ private:
     static CompatMatX* MatX_fromRows(const CompatVecX& r0, const CompatVecX& r1, const CompatVecX& r2, const CompatVecX& r3, const CompatVecX& r4, const CompatVecX& r5, const CompatVecX& r6, const CompatVecX& r7, const CompatVecX& r8, const CompatVecX& r9, bool setCols)
     {
         /* check vector dimensions */ CompatVecX rr[] = { r0, r1, r2, r3, r4, r5, r6, r7, r8, r9 };
-        int cols = -1, rows = -1;
+        Index cols = -1, rows = -1;
         for (int i = 0; i < 10; i++) {
             if (rows < 0 && rr[i].size() == 0)
                 rows = i;
@@ -627,17 +627,17 @@ private:
     }
     static CompatMatX* MatX_fromRowSeq(const std::vector<CompatVecX>& rr, bool setCols)
     {
-        int rows = rr.size(), cols = rr.size() > 0 ? rr[0].size() : 0;
-        for (int i = 1; i < rows; i++)
-            if (rr[i].size() != cols)
+        size_t rows = rr.size(), cols = rr.size() > 0 ? static_cast<size_t>(rr[0].size()) : 0;
+        for (size_t i = 1; i < rows; i++)
+            if (static_cast<size_t>(rr[i].size()) != cols)
                 throw std::invalid_argument(("MatrixX: all rows must have the same length."));
         CompatMatX* m;
         m = setCols ? new CompatMatX(cols, rows) : new CompatMatX(rows, cols);
-        for (int i = 0; i < rows; i++) {
+        for (size_t i = 0; i < rows; i++) {
             if (setCols)
-                m->col(i) = rr[i];
+                m->col(static_cast<Index>(i)) = rr[i];
             else
-                m->row(i) = rr[i];
+                m->row(static_cast<Index>(i)) = rr[i];
         }
         return m;
     };

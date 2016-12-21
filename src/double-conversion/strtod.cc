@@ -161,7 +161,7 @@ static uint64_t ReadUint64(Vector<const char> buffer,
   while (i < buffer.length() && result <= (kMaxUint64 / 10 - 1)) {
     int digit = buffer[i++] - '0';
     ASSERT(0 <= digit && digit <= 9);
-    result = 10 * result + digit;
+    result = 10 * result + static_cast<uint64_t>(digit);
   }
   *number_of_read_digits = i;
   return result;
@@ -362,7 +362,7 @@ static bool DiyFpStrtod(Vector<const char> buffer,
   half_way *= kDenominator;
   DiyFp rounded_input(input.f() >> precision_digits_count,
                       input.e() + precision_digits_count);
-  if (precision_bits >= half_way + error) {
+  if (precision_bits >= half_way + static_cast<uint64_t>(error)) {
     rounded_input.set_f(rounded_input.f() + 1);
   }
   // If the last_bits are too close to the half-way case than we are too
@@ -370,7 +370,7 @@ static bool DiyFpStrtod(Vector<const char> buffer,
   // fall back to a more precise algorithm.
 
   *result = Double(rounded_input).value();
-  if (half_way - error < precision_bits && precision_bits < half_way + error) {
+  if (half_way - static_cast<uint64_t>(error) < precision_bits && precision_bits < half_way + static_cast<uint64_t>(error)) {
     // Too imprecise. The caller will have to fall back to a slower version.
     // However the returned number is guaranteed to be either the correct
     // double, or the next-lower double.

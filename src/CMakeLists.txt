@@ -21,7 +21,6 @@ set(CONVHEADERS double-conversion/bignum-dtoa.h double-conversion/bignum.h doubl
 set(SOURCES expose-matrices.cpp)
 set(HEADERS common.hpp converters.hpp expose.hpp visitors.hpp)
 
-
 add_library(_${PROJECT_NAME} SHARED ${SOURCES} ${HEADERS} ${CONVSOURCES} ${CONVHEADERS})
 target_link_libraries(_${PROJECT_NAME} ${Boost_LIBRARIES})
 set_target_properties(_${PROJECT_NAME} PROPERTIES PREFIX "")

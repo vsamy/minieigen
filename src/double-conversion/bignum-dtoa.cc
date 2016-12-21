@@ -198,7 +198,7 @@ static void GenerateShortestDigits(Bignum* numerator, Bignum* denominator,
     ASSERT(digit <= 9);  // digit is a uint16_t and therefore always positive.
     // digit = numerator / denominator (integer division).
     // numerator = numerator % denominator.
-    buffer[(*length)++] = digit + '0';
+    buffer[(*length)++] = static_cast<char>(digit) + '0';
 
     // Can we stop already?
     // If the remainder of the division is less than the distance to the lower
@@ -290,7 +290,7 @@ static void GenerateCountedDigits(int count, int* decimal_point,
     ASSERT(digit <= 9);  // digit is a uint16_t and therefore always positive.
     // digit = numerator / denominator (integer division).
     // numerator = numerator % denominator.
-    buffer[i] = digit + '0';
+    buffer[i] = static_cast<char>(digit) + '0';
     // Prepare for next iteration.
     numerator->Times10();
   }
@@ -300,7 +300,7 @@ static void GenerateCountedDigits(int count, int* decimal_point,
   if (Bignum::PlusCompare(*numerator, *numerator, *denominator) >= 0) {
     digit++;
   }
-  buffer[count - 1] = digit + '0';
+  buffer[count - 1] = static_cast<char>(digit) + '0';
   // Correct bad digits (in case we had a sequence of '9's). Propagate the
   // carry until we hat a non-'9' or til we reach the first digit.
   for (int i = count - 1; i > 0; --i) {

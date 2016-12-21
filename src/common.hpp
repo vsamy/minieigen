@@ -112,7 +112,7 @@ static inline string doubleToShortest(double d, int pad = 0)
     string ret(sb.Finalize());
     if (pad == 0 || (int)ret.size() >= pad)
         return ret;
-    return string(pad - ret.size(), ' ') + ret; // left-padded if shorter
+    return string(static_cast<size_t>(pad) - ret.size(), ' ') + ret; // left-padded if shorter
 }
 
 /* generic function to print numbers, via lexical_cast plus padding -- used for ints */
@@ -122,7 +122,7 @@ string num_to_string(const T& num, int pad = 0)
     string ret(lexical_cast<string>(num));
     if (pad == 0 || (int)ret.size() >= pad)
         return ret;
-    return string(pad - ret.size(), ' ') + ret; // left-pad with spaces
+    return string(static_cast<size_t>(pad) - ret.size(), ' ') + ret; // left-pad with spaces
 }
 
 // for doubles, use the shortest representation
@@ -140,7 +140,7 @@ string num_to_string(const complex<T>& num, int pad = 0)
         string ret = num_to_string(num.real(), /*pad*/ 0) + (num.imag() > 0 ? "+" : "") + num_to_string(num.imag(), /*pad*/ 0) + "j";
         if (pad == 0 || (int)ret.size() >= pad)
             return ret;
-        return string(pad - ret.size(), ' ') + ret; // left-pad with spaces
+        return string(static_cast<size_t>(pad) - ret.size(), ' ') + ret; // left-pad with spaces
     }
     // only imaginary is non-zero: skip the real part, and decrease padding to accomoadate the trailing "j"
     if (num.imag() != 0) {

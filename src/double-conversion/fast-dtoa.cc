@@ -349,8 +349,8 @@ static bool DigitGen(DiyFp low,
   // with the divisor exponent + 1. And the divisor is the biggest power of ten
   // that is smaller than integrals.
   while (*kappa > 0) {
-    int digit = integrals / divisor;
-    buffer[*length] = '0' + digit;
+    int digit = static_cast<int>(integrals / divisor);
+    buffer[*length] = '0' + static_cast<char>(digit);
     (*length)++;
     integrals %= divisor;
     (*kappa)--;
@@ -385,7 +385,7 @@ static bool DigitGen(DiyFp low,
     unsafe_interval.set_f(unsafe_interval.f() * 10);
     // Integer division by one.
     int digit = static_cast<int>(fractionals >> -one.e());
-    buffer[*length] = '0' + digit;
+    buffer[*length] = '0' + static_cast<char>(digit);
     (*length)++;
     fractionals &= one.f() - 1;  // Modulo by one.
     (*kappa)--;
@@ -458,8 +458,8 @@ static bool DigitGenCounted(DiyFp w,
   // with the divisor exponent + 1. And the divisor is the biggest power of ten
   // that is smaller than 'integrals'.
   while (*kappa > 0) {
-    int digit = integrals / divisor;
-    buffer[*length] = '0' + digit;
+    int digit = static_cast<int>(integrals / divisor);
+    buffer[*length] = '0' + static_cast<char>(digit);
     (*length)++;
     requested_digits--;
     integrals %= divisor;
@@ -492,7 +492,7 @@ static bool DigitGenCounted(DiyFp w,
     w_error *= 10;
     // Integer division by one.
     int digit = static_cast<int>(fractionals >> -one.e());
-    buffer[*length] = '0' + digit;
+    buffer[*length] = '0' + static_cast<char>(digit);
     (*length)++;
     requested_digits--;
     fractionals &= one.f() - 1;  // Modulo by one.

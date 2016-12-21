@@ -22,9 +22,11 @@ BOOST_PYTHON_MODULE(_minieigen)
     docopt.enable_all();
     docopt.disable_cpp_signatures();
 
+#pragma GCC diagnostic ignored "-Werror"
     expose_converters(); // in expose-converters.cpp
+#pragma GCC diagnostic pop
 
-    //expose_vectors();
+    expose_vectors();
     expose_matrices(); // must come after vectors
     //expose_complex();
     //expose_quaternion();

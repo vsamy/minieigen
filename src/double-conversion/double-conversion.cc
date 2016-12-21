@@ -569,7 +569,7 @@ static double RadixStringToIeee(const char* current,
   }
 
   ASSERT(number != 0);
-  return Double(DiyFp(number, exponent)).value();
+  return Double(DiyFp(static_cast<uint64_t>(number), exponent)).value();
 }
 
 
@@ -600,7 +600,7 @@ double StringToDoubleConverter::StringToIeee(
 
   if (allow_leading_spaces || allow_trailing_spaces) {
     if (!AdvanceToNonspace(&current, end)) {
-      *processed_characters_count = current - input;
+      *processed_characters_count = static_cast<int>(current - input);
       return empty_string_value_;
     }
     if (!allow_leading_spaces && (input != current)) {
@@ -649,7 +649,7 @@ double StringToDoubleConverter::StringToIeee(
       }
 
       ASSERT(buffer_pos == 0);
-      *processed_characters_count = current - input;
+      *processed_characters_count = static_cast<int>(current - input);
       return sign ? -Double::Infinity() : Double::Infinity();
     }
   }
@@ -668,7 +668,7 @@ double StringToDoubleConverter::StringToIeee(
       }
 
       ASSERT(buffer_pos == 0);
-      *processed_characters_count = current - input;
+      *processed_characters_count = static_cast<int>(current - input);
       return sign ? -Double::NaN() : Double::NaN();
     }
   }
@@ -677,7 +677,7 @@ double StringToDoubleConverter::StringToIeee(
   if (*current == '0') {
     ++current;
     if (current == end) {
-      *processed_characters_count = current - input;
+      *processed_characters_count = static_cast<int>(current - input);
       return SignedZero(sign);
     }
 
@@ -700,7 +700,7 @@ double StringToDoubleConverter::StringToIeee(
                                            &tail_pointer);
       if (tail_pointer != NULL) {
         if (allow_trailing_spaces) AdvanceToNonspace(&tail_pointer, end);
-        *processed_characters_count = tail_pointer - input;
+        *processed_characters_count = static_cast<int>(tail_pointer - input);
       }
       return result;
     }
@@ -709,7 +709,7 @@ double StringToDoubleConverter::StringToIeee(
     while (*current == '0') {
       ++current;
       if (current == end) {
-        *processed_characters_count = current - input;
+        *processed_characters_count = static_cast<int>(current - input);
         return SignedZero(sign);
       }
     }
@@ -757,7 +757,7 @@ double StringToDoubleConverter::StringToIeee(
       while (*current == '0') {
         ++current;
         if (current == end) {
-          *processed_characters_count = current - input;
+          *processed_characters_count = static_cast<int>(current - input);
           return SignedZero(sign);
         }
         exponent--;  // Move this 0 into the exponent.
@@ -864,7 +864,7 @@ double StringToDoubleConverter::StringToIeee(
                                   read_as_double,
                                   &tail_pointer);
     ASSERT(tail_pointer != NULL);
-    *processed_characters_count = current - input;
+    *processed_characters_count = static_cast<int>(current - input);
     return result;
   }
 
@@ -882,7 +882,7 @@ double StringToDoubleConverter::StringToIeee(
   } else {
     converted = Strtof(Vector<const char>(buffer, buffer_pos), exponent);
   }
-  *processed_characters_count = current - input;
+  *processed_characters_count = static_cast<int>(current - input);
   return sign? -converted: converted;
 }
 

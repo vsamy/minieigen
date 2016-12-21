@@ -92,7 +92,7 @@ static uint64_t ReadUInt64(Vector<const char> buffer,
   for (int i = from; i < from + digits_to_read; ++i) {
     int digit = buffer[i] - '0';
     ASSERT(0 <= digit && digit <= 9);
-    result = result * 10 + digit;
+    result = result * 10 + static_cast<uint64_t>(digit);
   }
   return result;
 }
@@ -139,7 +139,7 @@ void Bignum::AssignHexString(Vector<const char> value) {
     // These bigits are guaranteed to be "full".
     Chunk current_bigit = 0;
     for (int j = 0; j < kBigitSize / 4; j++) {
-      current_bigit += HexCharValue(value[string_index--]) << (j * 4);
+      current_bigit += static_cast<Chunk>(HexCharValue(value[string_index--]) << (j * 4));
     }
     bigits_[i] = current_bigit;
   }
@@ -148,7 +148,7 @@ void Bignum::AssignHexString(Vector<const char> value) {
   Chunk most_significant_bigit = 0;  // Could be = 0;
   for (int j = 0; j <= string_index; ++j) {
     most_significant_bigit <<= 4;
-    most_significant_bigit += HexCharValue(value[j]);
+    most_significant_bigit += static_cast<Chunk>(HexCharValue(value[j]));
   }
   if (most_significant_bigit != 0) {
     bigits_[used_digits_] = most_significant_bigit;
@@ -508,7 +508,7 @@ uint16_t Bignum::DivideModuloIntBignum(const Bignum& other) {
     // Remove the multiples of the first digit.
     // Example this = 23 and other equals 9. -> Remove 2 multiples.
     result += bigits_[used_digits_ - 1];
-    SubtractTimes(other, bigits_[used_digits_ - 1]);
+    SubtractTimes(other, static_cast<int>(bigits_[used_digits_ - 1]));
   }
 
   ASSERT(BigitLength() == other.BigitLength());
@@ -521,16 +521,16 @@ uint16_t Bignum::DivideModuloIntBignum(const Bignum& other) {
 
   if (other.used_digits_ == 1) {
     // Shortcut for easy (and common) case.
-    int quotient = this_bigit / other_bigit;
+    Chunk quotient = this_bigit / other_bigit;
     bigits_[used_digits_ - 1] = this_bigit - other_bigit * quotient;
     result += quotient;
     Clamp();
     return result;
   }
 
-  int division_estimate = this_bigit / (other_bigit + 1);
+  Chunk division_estimate = this_bigit / (other_bigit + 1);
   result += division_estimate;
-  SubtractTimes(other, division_estimate);
+  SubtractTimes(other, static_cast<int>(division_estimate));
 
   if (other_bigit * (division_estimate + 1) > this_bigit) {
     // No need to even try to subtract. Even if other's remaining digits were 0
@@ -560,8 +560,8 @@ static int SizeInHexChars(S number) {
 
 static char HexCharOfValue(int value) {
   ASSERT(0 <= value && value <= 16);
-  if (value < 10) return value + '0';
-  return value - 10 + 'A';
+  if (value < 10) return static_cast<char>(value) + '0';
+  return static_cast<char>(value) - 10 + 'A';
 }
 
 
@@ -755,7 +755,7 @@ void Bignum::SubtractTimes(const Bignum& other, int factor) {
     Chunk difference = bigits_[i] - borrow;
     bigits_[i] = difference & kBigitMask;
     borrow = difference >> (kChunkSize - 1);
-    ++i;
+    i += 1;
   }
   Clamp();
 }
