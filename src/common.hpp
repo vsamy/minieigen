@@ -1,13 +1,23 @@
-#pragma once
-// common types, funcs, includes; should be included by all other files
+// This file is part of minieigen.
 
-// BEGIN workaround for
-// * http://eigen.tuxfamily.org/bz/show_bug.cgi?id=528
-// * https://sourceforge.net/tracker/index.php?func=detail&aid=3584127&group_id=202880&atid=983354
-// (only needed with gcc <= 4.7)
-#include <stdlib.h>
-#include <sys/stat.h>
-// END workaround
+// minieigen is free software: you can redistribute it and/or
+// modify
+// it under the terms of the GNU Lesser General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// minieigen is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU Lesser General Public License
+// along with minieigen.  If not, see
+// <http://www.gnu.org/licenses/>.
+
+#pragma once
+
+// common types, funcs, includes; should be included by all other files
 
 #include <Eigen/Core>
 #include <Eigen/Eigenvalues>

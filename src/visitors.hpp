@@ -1,6 +1,25 @@
+// This file is part of minieigen.
+
+// minieigen is free software: you can redistribute it and/or
+// modify
+// it under the terms of the GNU Lesser General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// minieigen is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU Lesser General Public License
+// along with minieigen.  If not, see
+// <http://www.gnu.org/licenses/>.
+
 #pragma once
+
 #include "common.hpp"
 #include <type_traits>
+
 // classes dealing with exposing actual types, with many switches inside depending on template arguments
 
 // Eigen base class
@@ -76,7 +95,7 @@ private:
             .add_static_property("Identity", &MatrixBaseVisitor::Identity);
     }
     template <typename Scalar, class PyClass, typename std::enable_if_t<std::is_integral<Scalar>::value>* = nullptr>
-    static void visit_if_float(PyClass& /* cl */) { /* Do nothing */ }
+    static void visit_if_float(PyClass& /* cl */) { /* Do nothing */}
     template <typename Scalar, class PyClass, typename std::enable_if_t<!std::is_integral<Scalar>::value>* = nullptr>
     static void visit_if_float(PyClass& cl)
     {
