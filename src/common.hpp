@@ -83,6 +83,17 @@ typedef Eigen::Matrix<complex<float>, Eigen::Dynamic, Eigen::Dynamic> MatrixXcf;
 typedef Eigen::Matrix<complex<double>, Eigen::Dynamic, Eigen::Dynamic> MatrixXcd;
 #endif
 
+#include <Eigen/SparseCore>
+
+typedef Eigen::Triplet<float> Tripletf;
+typedef Eigen::Triplet<double> Tripletd;
+typedef Eigen::SparseMatrix<float> SparseMatrixf;
+typedef Eigen::SparseMatrix<double> SparseMatrixd;
+
+// For STL vector
+typedef std::vector<Tripletf> vectorOfTripletf;
+typedef std::vector<Tripletd> vectorOfTripletd;
+
 #include <string>
 using std::string;
 #include <iomanip>

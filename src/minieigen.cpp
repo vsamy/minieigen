@@ -43,6 +43,9 @@ BOOST_PYTHON_MODULE(_minieigen)
 
     expose_vectors();
     expose_matrices(); // must come after vectors
+    expose_triplets();
+    expose_stl_vectors(); // Need to be before sparse matrix
+    expose_sparse_matrices();
     expose_complex();
     expose_quaternion();
     expose_boxes();

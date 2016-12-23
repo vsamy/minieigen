@@ -36,6 +36,108 @@ public:
     }
 };
 
+// Triplets for creating sparse matrices
+template <typename TriT, typename Scalar>
+class TripletVisitor : public py::def_visitor<TripletVisitor<TriT, Scalar>> {
+public:
+    template <class PyClass>
+    void visit(PyClass& cl) const
+    {
+        cl
+            .def(py::init<Index, Index, py::optional<Scalar> >())
+            .def("row", &TripletVisitor::row) // StorageIndex is defaulted to Index.
+            .def("col", &TripletVisitor::col) // StorageIndex is defaulted to Index.
+            .def("value", &TripletVisitor::value);
+    }
+private:
+    static Scalar value(TriT triplet) { return triplet.value(); }
+    static Index row(TriT triplet) { return triplet.row(); }
+    static Index col(TriT triplet) { return triplet.col(); }
+};
+/*
+// methods common for sparse vectors and sparse matrices
+template <typename spMatrixBaseT>
+class SparseCompressedBaseVisitor : public py::def_visitor<SparseCompressedBaseVisitor<spMatrixBaseT> > {
+    typedef typename spMatrixBaseT::value_type Scalar;
+public:
+    template <class PyClass>
+    void visit(Pyclass& cl) const
+    {
+        EigenBaseVisitor<spMatrixBaseT>().visit(cl);
+        cl
+            .def(py::init<spMatrixBaseT>(py::arg("other")))
+            .def("__neg__", &spMatrixBaseT::__neg__)
+            .def("__add__", &SparseCompressedBaseVisitor::__add__)
+            .def("__iadd__", &SparseCompressedBaseVisitor::__iadd__)
+            .def("__sub__", &SparseCompressedBaseVisitor::__sub__)
+            .def("__isub__", &SparseCompressedBaseVisitor::__isub__)
+            .def("__eq__", &SparseCompressedBaseVisitor::__eq__)
+            .def("__ne__", &SparseCompressedBaseVisitor::__ne__)
+            .def("__mul__", &SparseCompressedBaseVisitor::__mul__scalar<Scalar>)
+            .def("__rmul__", &SparseCompressedBaseVisitor::__rmul__scalar<Scalar>)
+            .def("__imul__", &SparseCompressedBaseVisitor::__imul__scalar<Scalar>)
+
+            // Specific to sparse object
+            .def("innerSize", &spMatrixBaseT::innerSize)
+            .def("outerSize", &spMatrixBaseT::outerSize)
+            .def("isVector", &spMatrixBaseT::isVector)
+            .def("nonZeros", &spMatrixBaseT::nonZeros)
+
+            ;
+    }
+
+private:
+    static spMatrixBaseT __neg__(const spMatrixBaseT sp) { return -sp; }
+    static spMatrixBaseT __add__(const spMatrixBaseT& a, const spMatrixBaseT& b) { return a + b; }
+    static spMatrixBaseT __sub__(const spMatrixBaseT& a, const spMatrixBaseT& b) { return a - b; }
+    static spMatrixBaseT __iadd__(spMatrixBaseT& a, const spMatrixBaseT& b)
+    {
+        a += b;
+        return a;
+    };
+    static spMatrixBaseT __isub__(spMatrixBaseT& a, const spMatrixBaseT& b)
+    {
+        a -= b;
+        return a;
+    };
+
+    template <typename Scalar2>
+    static spMatrixBaseT __mul__scalar(const spMatrixBaseT& a, const Scalar2& scalar) { return a * scalar; }
+    template <typename Scalar2>
+    static spMatrixBaseT __imul__scalar(spMatrixBaseT& a, const Scalar2& scalar)
+    {
+        a *= scalar;
+        return a;
+    }
+    template <typename Scalar2>
+    static spMatrixBaseT __rmul__scalar(const spMatrixBaseT& a, const Scalar2& scalar) { return a * scalar; }
+    template <typename Scalar2>
+    static spMatrixBaseT __div__scalar(const spMatrixBaseT& a, const Scalar2& scalar) { return a / scalar; }
+    template <typename Scalar2>
+    static spMatrixBaseT __idiv__scalar(spMatrixBaseT& a, const Scalar2& scalar)
+    {
+        a /= scalar;
+        return a;
+    }
+};
+
+// methods for sparse matrix
+template <typename spMatrxT>
+class SparseMatrixVisitor : public py::def_visitor<SparseMatrixVisitor<spMatrixT> > {
+    typedef typename spMatrxT::value_type Scalar;
+
+public:
+    template <class PyClass>
+    void visit<PyClass & cl> const
+    {
+        SparseMatrixBaseVisitor<spMatrixT>().visit(cl);
+        cl
+            .def(py::init<spMatrixT>(py::arg("other")));
+            .def(py::init<Index, Index>());
+            .def("resize", &VectorVisitor::resize)
+    }
+}
+*/
 // methods common for vectors and matrices
 template <typename MatrixBaseT>
 class MatrixBaseVisitor : public py::def_visitor<MatrixBaseVisitor<MatrixBaseT> > {

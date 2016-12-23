@@ -15,13 +15,12 @@
 // along with minieigen.  If not, see
 // <http://www.gnu.org/licenses/>.
 
-// functions defined in the respective .cpp files
-void expose_matrices();
-void expose_vectors();
-void expose_boxes();
-void expose_quaternion();
-void expose_complex(); // does nothing if _COMPLEX_SUPPORT is not #defined
-void expose_converters();
-void expose_sparse_matrices();
-void expose_stl_vectors();
-void expose_triplets();
+#include "visitors.hpp"
+
+void expose_triplets()
+{
+    py::class_<Tripletf>("Tripletf", "Define an Eigen::Triplet of float",py::init<>())
+        .def(TripletVisitor<Tripletf, float>());
+    py::class_<Tripletd>("Tripletd", "Define an Eigen::Triplet of double", py::init<>())
+        .def(TripletVisitor<Tripletd, double>());
+}
