@@ -16,9 +16,9 @@ set(CONVHEADERS double-conversion/bignum-dtoa.h double-conversion/bignum.h doubl
     double-conversion/diy-fp.h double-conversion/double-conversion.h double-conversion/fast-dtoa.h
     double-conversion/fixed-dtoa.h double-conversion/ieee.h double-conversion/strtod.h double-conversion/utils.h)
 set(SOURCES expose-boxes.cpp expose-complex.cpp expose-converters.cpp expose-matrices.cpp
-    expose-quaternion.cpp expose-vectors.cpp expose-triplets.cpp expose-stl-vectors.cpp 
-    expose-sparse.cpp minieigen.cpp)
-set(HEADERS common.hpp converters.hpp expose.hpp visitors.hpp stlVisitor.hpp)
+    expose-quaternion.cpp expose-vectors.cpp minieigen.cpp)
+#set(SOURCES minieigen.cpp expose-matrices.cpp)
+set(HEADERS common.hpp converters.hpp expose.hpp visitors.hpp)
 
 add_library(_${PROJECT_NAME} SHARED ${SOURCES} ${HEADERS} ${CONVSOURCES} ${CONVHEADERS})
 target_link_libraries(_${PROJECT_NAME} ${Boost_LIBRARIES})
