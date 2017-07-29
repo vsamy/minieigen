@@ -150,6 +150,7 @@ void PowersOfTenCache::GetCachedPowerForBinaryExponentRange(
   int index =
       (foo + static_cast<int>(k) - 1) / kDecimalExponentDistance + 1;
   ASSERT(0 <= index && index < kCachedPowersLength);
+  (void)kCachedPowersLength; // Just to tell the compiler that it is used.
   CachedPower cached_power = kCachedPowers[index];
   ASSERT(min_exponent <= cached_power.binary_exponent);
   ASSERT(cached_power.binary_exponent <= max_exponent);
